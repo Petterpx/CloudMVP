@@ -45,33 +45,36 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (setLayout() instanceof Integer) {
-            rootView = inflater.inflate((Integer) setLayout(), container, false);
-        } else if (setLayout() instanceof View) {
-            rootView = (View) setLayout();
-        } else {
-            throw new ClassCastException("setLayout() must be int or View Error！");
-        }
-
-        if (presenter == null) {
-            PresenterFactoryImpl<IBaseView, BasePresenter<IBaseView>> factory = PresenterFactoryImpl.createFactory(getClass());
-            if (factory != null) {
-                presenter = (P) factory.createPresenter();
+        //解决navigation 返回导致onCreateView方法重新执行造成的异常
+        if (rootView==null){
+            if (setLayout() instanceof Integer) {
+                rootView = inflater.inflate((Integer) setLayout(), container, false);
+            } else if (setLayout() instanceof View) {
+                rootView = (View) setLayout();
+            } else {
+                throw new ClassCastException("setLayout() must be int or View Error！");
             }
+
+            if (presenter == null) {
+                PresenterFactoryImpl<IBaseView, BasePresenter<IBaseView>> factory = PresenterFactoryImpl.createFactory(getClass());
+                if (factory != null) {
+                    presenter = (P) factory.createPresenter();
+                }
+            }
+
+            if (presenter != null) {
+                presenter.onAttchView(this);
+                getLifecycle().addObserver(presenter);
+            }
+
+
+            //绑定ButterKnife
+            unbinder = ButterKnife.bind(this, rootView);
+            //Fragment回收保留数据
+            setRetainInstance(true);
+            //添加生命周期
+            onBindView(savedInstanceState, rootView);
         }
-
-        if (presenter != null) {
-            presenter.onAttchView(this);
-            getLifecycle().addObserver(presenter);
-        }
-
-
-        //绑定ButterKnife
-        unbinder = ButterKnife.bind(this, rootView);
-        //Fragment回收保留数据
-        setRetainInstance(true);
-        //添加生命周期
-        onBindView(savedInstanceState, rootView);
         return rootView;
     }
 
