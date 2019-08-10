@@ -12,4 +12,9 @@ public interface IBaseView {
      */
     void onDetachView();
 
+    /**
+     * 关闭键盘
+     */
+    void hidekey();
+
 }
