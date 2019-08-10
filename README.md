@@ -7,11 +7,6 @@
 - 更简单的 Presenter 注解工厂，用起来只需要一行代码。
 - 使用Lifecycle 赋予 Presenter 生命周期，避免onResume()等方法的重写，减少代码复杂度。
 
-使用 lifecycle 来赋予 P 层生命周期，避免重写各种 onResume()等方法。
-
-简单的注解工厂 P 层，使用起来更加简单。
-
-数据加载采用RxJ
 
 以下Class你可能需要注意：
 
