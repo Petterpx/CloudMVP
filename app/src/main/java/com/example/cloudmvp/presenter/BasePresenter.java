@@ -10,6 +10,9 @@ import com.example.cloudmvp.view.IBaseView;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -24,15 +27,29 @@ import io.reactivex.schedulers.Schedulers;
  * @author by Petterp
  * @date 2019-08-03
  */
-public abstract class BasePresenter<V extends IBaseView> implements DefaultLifecycleObserver {
+public abstract class BasePresenter<V extends IBaseView> implements DefaultLifecycleObserver, InvocationHandler {
 
     private Reference<V> mView;
     private Disposable subscribe;
+    //动态代理
+    private V proxyView;
 
     public void onAttchView(V view) {
         this.mView = new SoftReference<>(view);
-        getView(mView.get());
+        //动态代理，减少view!=null
+        proxyView = (V) Proxy.newProxyInstance(view.getClass().getClassLoader(), view.getClass().getInterfaces(), this);
+        getView(proxyView);
     }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        return isAttached() ? method.invoke(mView, args) : null;
+    }
+
+    private boolean isAttached() {
+        return mView != null && proxyView != null;
+    }
+
 
     public abstract void getView(V view);
 

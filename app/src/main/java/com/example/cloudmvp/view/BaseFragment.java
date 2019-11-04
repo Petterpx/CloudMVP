@@ -1,5 +1,6 @@
 package com.example.cloudmvp.view;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -54,6 +56,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
      */
     public abstract void onBindView(@Nullable Bundle savedInstanceState, @NonNull View rootView);
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -68,10 +71,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
             }
 
             if (presenter == null) {
-                PresenterFactoryImpl<IBaseView, BasePresenter<IBaseView>> factory = PresenterFactoryImpl.createFactory(getClass());
-                if (factory != null) {
-                    presenter = (P) factory.createPresenter();
-                }
+                presenter = (P) PresenterFactoryImpl.createFactory(getClass());
             }
 
             if (presenter != null) {
