@@ -26,26 +26,26 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //导入jetPack相应依赖
-    def lifecycle_version = "2.0.0"
-    def nav_version = "2.1.0-beta02"
+    def lifecycle_version = "2.1.0"
+    def nav_version = "2.2.0-beta01"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
-    // Java
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
 
     //butterknife
     implementation 'com.jakewharton:butterknife:10.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
 
     //沉浸式状态栏
-    implementation 'com.gyf.immersionbar:immersionbar:3.0.0-beta03'
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
     implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0-beta03'
 
     //RxJava+RxAndroid

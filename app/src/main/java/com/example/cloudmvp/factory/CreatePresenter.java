@@ -3,6 +3,8 @@ package com.example.cloudmvp.factory;
 
 
 
+import com.example.cloudmvp.defaultmvp.DefaultControl;
+import com.example.cloudmvp.defaultmvp.DefaultPresenter;
 import com.example.cloudmvp.presenter.BasePresenter;
 
 import java.lang.annotation.Inherited;
@@ -17,5 +19,5 @@ import java.lang.annotation.RetentionPolicy;
 @Inherited //可重复
 @Retention(RetentionPolicy.RUNTIME) //运行时
 public @interface CreatePresenter {
-    Class<? extends BasePresenter> value();
+    Class<? extends BasePresenter> value() default DefaultPresenter.class;
 }

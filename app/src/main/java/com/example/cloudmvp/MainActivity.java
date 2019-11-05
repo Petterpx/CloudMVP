@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.example.cloudmvp.R;
+import com.example.test.TestDefaultFragment;
 
 /**
  * 测试Demo
@@ -15,5 +15,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportFragmentManager().beginTransaction().replace(R.id.ud_fragment, TestDefaultFragment.newInstance()).commit();
     }
 }

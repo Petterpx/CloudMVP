@@ -1,5 +1,6 @@
 package com.example.cloudmvp.view;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,14 +15,14 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
+import com.example.cloudmvp.factory.CreatePresenter;
 import com.example.cloudmvp.factory.PresenterFactoryImpl;
-import com.example.cloudmvp.presenter.BasePresenter;
+import com.example.cloudmvp.presenter.IPresenter;
 import com.example.cloudmvp.utils.Latte;
 import com.gyf.immersionbar.ImmersionBar;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.disposables.Disposable;
 
 /**
  * Fragment基类
@@ -31,12 +32,12 @@ import io.reactivex.disposables.Disposable;
  * @author by Petterp
  * @date 2019-08-03
  */
-public abstract class BaseFragment<P extends BasePresenter> extends Fragment implements IBaseView, BaseActivity.BackPressFragment {
+@CreatePresenter
+public abstract class BaseFragment<P extends IPresenter> extends Fragment implements IView, BaseActivity.BackPressFragment {
     private P presenter = null;
     private Unbinder unbinder = null;
     private View rootView = null;
 
-//    public abstract boolean backMode();
 
     /**
      * 设置view
@@ -44,8 +45,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
      * @return view
      */
     public abstract Object setLayout();
-
-
 
 
     /**
@@ -75,7 +74,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
             }
 
             if (presenter != null) {
-                presenter.onAttchView(this);
+                presenter.setView(this);
                 getLifecycle().addObserver(presenter);
             }
 
@@ -94,7 +93,9 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         super.onViewCreated(view, savedInstanceState);
         setTitleToolbar();
         //传递返回监听事件给Activity
-        Latte.getBaseActivity().setiBack(this);
+        if (backMode()){
+            Latte.getBaseActivity().setiBack(this);
+        }
     }
 
     /**
@@ -105,6 +106,11 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
                 .titleBar(setToolbar())
                 .autoDarkModeEnable(true)
                 .init();
+    }
+
+    @Override
+    public Context context() {
+        return getContext();
     }
 
     /**
@@ -121,7 +127,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
      *
      * @return Presenter
      */
-    protected P getPresenter() {
+    public P getPresenter() {
         return presenter;
     }
 
@@ -134,11 +140,9 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         return rootView;
     }
 
-    /**
-     * 销毁
-     */
     @Override
-    public void onDetachView() {
+    public void onDestroyView() {
+        super.onDestroyView();
         if (unbinder != null) {
             unbinder.unbind();
             unbinder = null;
@@ -146,7 +150,6 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         presenter = null;
         rootView = null;
     }
-
 
     /**
      * 返回事件重写,默认不重写
@@ -211,4 +214,17 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         return Navigation.findNavController(getRootView()).popBackStack(id, false);
     }
 
+    @Override
+    public void onDetachView() {
+
+    }
+
+    @Override
+    public void hidekey() {
+
+    }
+
+    public boolean backMode() {
+        return false;
+    }
 }
