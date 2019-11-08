@@ -14,6 +14,8 @@ import com.example.cloudmvp.view.IView;
 public interface TestControl {
     interface testView extends IView {
 
+        void test();
+
     }
 
     interface testPresenter extends IPresenter<testView, testModel> {

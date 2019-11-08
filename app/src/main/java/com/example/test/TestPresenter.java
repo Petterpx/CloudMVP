@@ -11,5 +11,8 @@ import com.example.cloudmvp.presenter.BasePresenter;
  */
 @CreateModel(TestModels.class)
 public class TestPresenter extends BasePresenter<TestControl.testView, TestControl.testModel> implements TestControl.testPresenter {
-
+    @Override
+    public void initPresenter() {
+        getView().test();
+    }
 }

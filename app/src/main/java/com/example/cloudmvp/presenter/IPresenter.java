@@ -10,9 +10,32 @@ import com.example.cloudmvp.view.IView;
  * on 2019-11-04
  * Function:Presenter 接口
  */
-public interface IPresenter<V extends IView, M extends IModel> extends  DefaultLifecycleObserver {
+public interface IPresenter<V extends IView, M extends IModel> extends DefaultLifecycleObserver {
 
+
+    /**
+     * 一些初始化的操作
+     */
+    default void initPresenter() {
+
+    }
+
+    /**
+     * 是否需要LiveBus-> 暂时为EventBus
+     *
+     * @return
+     */
+    default boolean isLiveBus() {
+        return false;
+    }
+
+    /**
+     * 设置View
+     *
+     * @param v
+     */
     void setView(V v);
+
     /**
      * 获取V
      *

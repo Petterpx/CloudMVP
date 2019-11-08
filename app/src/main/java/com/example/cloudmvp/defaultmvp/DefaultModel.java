@@ -6,7 +6,7 @@ import com.example.cloudmvp.model.BaseModel;
 /**
  * Created by Petterp
  * on 2019-11-05
- * Function:
+ * Function:默认Model
  */
 public class DefaultModel extends BaseModel<DefaultControl.DefaultPresenter> implements DefaultControl.DefaultModel {
 
