@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 
 import com.example.cloudmvp.R;
 import com.example.cloudmvp.defaultmvp.DefaultControl;
+import com.example.cloudmvp.live_bus.LiveDataEventBus;
 import com.example.cloudmvp.view.BaseFragment;
 
 /**

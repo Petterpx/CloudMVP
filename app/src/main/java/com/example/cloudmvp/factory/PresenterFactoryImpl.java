@@ -25,10 +25,15 @@ public class PresenterFactoryImpl {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static <P extends BasePresenter> P createFactory(Class<?> viewClazz) {
         CreatePresenter annotation = viewClazz.getAnnotation(CreatePresenter.class);
+        Class<P> aClass = null;
+        if (annotation != null) {
+            aClass = (Class<P>) annotation.value();
+        }
         try {
-            return ((Class<P>) annotation.value()).newInstance();
-        } catch (Exception e) {
+            return aClass != null ? aClass.newInstance() : null;
+        } catch (IllegalAccessException | InstantiationException e) {
             throw new RuntimeException("Presenter创建失败!，检查是否声明了@CreatePresenter(xx.class)注解");
         }
     }
+
 }

@@ -1,6 +1,6 @@
 package com.example.cloudmvp.factory;
 
-import com.example.cloudmvp.defaultmvp.DefaultModel;
+
 import com.example.cloudmvp.model.BaseModel;
 
 import java.lang.annotation.Inherited;
@@ -15,5 +15,5 @@ import java.lang.annotation.RetentionPolicy;
 @Inherited //可重复
 @Retention(RetentionPolicy.RUNTIME) //运行时
 public @interface CreateModel {
-    Class<? extends BaseModel> value() default DefaultModel.class;
+    Class<? extends BaseModel> value();
 }

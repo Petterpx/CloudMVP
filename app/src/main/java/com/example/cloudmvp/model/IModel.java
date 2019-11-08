@@ -10,6 +10,19 @@ import com.example.cloudmvp.presenter.IPresenter;
  */
 public interface IModel<P extends IPresenter> {
 
+
+    /**
+     * 某些初始化行为
+     */
+    default void initData() {
+
+    }
+
+
+    /**
+     * 设置P
+     * @param p
+     */
     void setPresenter(P p);
 
     /**

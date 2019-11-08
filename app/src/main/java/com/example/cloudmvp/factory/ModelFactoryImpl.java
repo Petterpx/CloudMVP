@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi;
 
 import com.example.cloudmvp.model.BaseModel;
 
+
 /**
  * Created by Petterp
  * on 2019-11-04
@@ -19,13 +20,19 @@ public class ModelFactoryImpl {
      * @param <M>       当前要创建的Model类型
      * @return 工厂类
      */
+    @SuppressWarnings("unchecked")
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static <M extends BaseModel> M createFactory(Class<?> viewClazz) {
+
         CreateModel annotation = viewClazz.getAnnotation(CreateModel.class);
+        Class<M> aClass = null;
+        if (annotation != null) {
+            aClass = (Class<M>) annotation.value();
+        }
         try {
-            return ((Class<M>) annotation.value()).newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException("Model创建失败!，检查是否声明了@CreateModel(xx.class)注解");
+            return aClass != null ? aClass.newInstance() : null;
+        } catch (IllegalAccessException | InstantiationException e) {
+            throw new RuntimeException("Presenter创建失败!，检查是否声明了@CreatePresenter(xx.class)注解");
         }
     }
 }

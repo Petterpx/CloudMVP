@@ -59,9 +59,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         //执行相应方法，成功拦截，否则默认执行
-        if (iBack.setBackPress()) {
-            return true;
+        if (iBack!=null){
+            if (iBack.setBackPress()) {
+                return true;
+            }
         }
+
         return super.onKeyUp(keyCode, event);
     }
 

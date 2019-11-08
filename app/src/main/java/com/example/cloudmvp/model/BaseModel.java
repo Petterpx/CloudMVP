@@ -12,17 +12,27 @@ import com.example.cloudmvp.presenter.IPresenter;
  */
 public abstract class BaseModel<P extends IPresenter> implements IModel {
 
+    /**
+     * P层接口
+     */
     private P p;
 
+    /**
+     * 设置P
+     * @param iPresenter
+     */
     @Override
     public void setPresenter(IPresenter iPresenter) {
         this.p= (P) iPresenter;
     }
 
+    /**
+     * 获取P层接口
+     * @return
+     */
     @Override
     public P getPresenter() {
         return p;
     }
-
 
 }

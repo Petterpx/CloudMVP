@@ -28,16 +28,20 @@ public interface IView {
      */
     Context context();
 
+    void showLoader();
+
+    void stopLoader();
 
     /**
      * 销毁
      */
-    void onDetachView();
+    default void onDetachView() {
+
+    }
 
     /**
      * 关闭键盘
      */
     void hidekey();
-
 
 }

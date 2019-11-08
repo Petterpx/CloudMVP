@@ -14,8 +14,13 @@ import com.example.cloudmvp.factory.ModelFactoryImpl;
 import com.example.cloudmvp.model.IModel;
 import com.example.cloudmvp.view.IView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -30,33 +35,40 @@ import io.reactivex.schedulers.Schedulers;
  * @author by Petterp
  * @date 2019-08-03
  */
-@CreateModel
-public abstract class BasePresenter<V extends IView, M extends IModel> implements IPresenter<V, M> {
+public abstract class BasePresenter<V extends IView, M extends IModel> implements IPresenter<V, M>, InvocationHandler {
 
-    private Reference<V> mView;
+    private V mView;
     private Disposable subscribe = null;
     private M model;
+    private V proxyView;
 
+
+    @SuppressWarnings("unchecked")
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
-    public void onCreate(@NonNull LifecycleOwner owner) {
-        if (rxMode()) {
-            rxStartInitData();
+    public void setView(V v) {
+        this.mView = v;
+        proxyView = (V) Proxy.newProxyInstance(v.getClass().getClassLoader(), v.getClass().getInterfaces(), this);
+        model = (M) ModelFactoryImpl.createFactory(getClass());
+        if (model != null) {
+            model.setPresenter(this);
         }
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
-    public void setView(V v) {
-        this.mView = new SoftReference<>(v);
-        model = (M) ModelFactoryImpl.createFactory(getClass());
-        assert model != null;
-        model.setPresenter(this);
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        return isAttached() ? method.invoke(mView, args) : null;
     }
+
+    private boolean isAttached() {
+        return mView != null && proxyView != null;
+    }
+
 
     @Override
     public V getView() {
-        return mView.get();
+        return proxyView;
     }
 
     @Override
@@ -86,6 +98,11 @@ public abstract class BasePresenter<V extends IView, M extends IModel> implement
 
     @Override
     public void onResume(@NonNull LifecycleOwner owner) {
+        //初始化一些操作，基本操作
+        initPresenter();
+        if (model != null) {
+            getModel().initData();
+        }
     }
 
     @Override
@@ -97,17 +114,23 @@ public abstract class BasePresenter<V extends IView, M extends IModel> implement
     public void onStop(@NonNull LifecycleOwner owner) {
         //关闭键盘,建议添加全局Activity,这里调用公共view层的hidekey方法
         if (mView != null) {
-            mView.get().hidekey();
+            proxyView.hidekey();
         }
     }
 
     @Override
     public void onDestroy(@NonNull LifecycleOwner owner) {
         if (mView != null) {
-            mView.get().onDetachView();
-            mView.clear();
+            proxyView.onDetachView();
             mView = null;
         }
+
+        //如果开启过EventBus，关闭
+        if (isLiveBus()) {
+            EventBus.clearCaches();
+            EventBus.getDefault().unregister(this);
+        }
+
         //取消Rx订阅
         if (subscribe != null && !subscribe.isDisposed()) {
             subscribe.dispose();

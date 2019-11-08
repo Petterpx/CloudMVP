@@ -30,19 +30,16 @@ public class TestFragment extends BaseFragment<TestControl.testPresenter> implem
     }
 
     public static TestFragment newInstance() {
-
+        
         Bundle args = new Bundle();
-
+        
         TestFragment fragment = new TestFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-
-
-
     @Override
-    public void updateView() {
-
+    public void test() {
+        Toast.makeText(getContext(), "asdadsa", Toast.LENGTH_SHORT).show();
     }
 }
