@@ -58,11 +58,11 @@ public abstract class BasePresenter<V extends IView, M extends IModel> implement
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return isAttached() ? method.invoke(mView, args) : null;
+        return isAttached() ? method.invoke(mView.get(), args) : null;
     }
 
     private boolean isAttached() {
-        return mView != null && proxyView != null;
+        return mView.get() != null && proxyView != null;
     }
 
 
