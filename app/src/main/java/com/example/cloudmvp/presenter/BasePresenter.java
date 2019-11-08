@@ -37,7 +37,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 public abstract class BasePresenter<V extends IView, M extends IModel> implements IPresenter<V, M>, InvocationHandler {
 
-    private V mView;
+    private SoftReference mView;
     private Disposable subscribe = null;
     private M model;
     private V proxyView;
@@ -47,7 +47,7 @@ public abstract class BasePresenter<V extends IView, M extends IModel> implement
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void setView(V v) {
-        this.mView = v;
+        this.mView = new SoftReference(v);
         proxyView = (V) Proxy.newProxyInstance(v.getClass().getClassLoader(), v.getClass().getInterfaces(), this);
         model = (M) ModelFactoryImpl.createFactory(getClass());
         if (model != null) {
@@ -113,15 +113,14 @@ public abstract class BasePresenter<V extends IView, M extends IModel> implement
     @Override
     public void onStop(@NonNull LifecycleOwner owner) {
         //关闭键盘,建议添加全局Activity,这里调用公共view层的hidekey方法
-        if (mView != null) {
-            proxyView.hidekey();
-        }
+        proxyView.hidekey();
     }
 
     @Override
     public void onDestroy(@NonNull LifecycleOwner owner) {
+        proxyView.onDetachView();
         if (mView != null) {
-            proxyView.onDetachView();
+            mView.clear();
             mView = null;
         }
 

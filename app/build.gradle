@@ -33,7 +33,6 @@ dependencies {
 
     //导入jetPack相应依赖
     def lifecycle_version = "2.1.0"
-    def nav_version = "2.2.0-beta01"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
 
