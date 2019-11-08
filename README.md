@@ -1,125 +1,106 @@
 # CloudMVP
 
-一个简单易用的Android MVP开发库，使用Navigation的傻瓜式单Activity+Fragment开发。
+一个简单易用的Android MVP开发库，已用于公司实际项目，不断完善，纯手工封装。
 
-- 处理并优化了 Navigation 中的一些细节问题，Fragment返回键傻瓜式配置，多栈跳转的优化。
-- 使用RxJava 优化页面启动的数据加载，默认关闭状态，根据需求决定是否需要。
-- 更简单的 Presenter 注解工厂，用起来只需要一行代码。
+- 面向接口的MVP模板，方便解耦；
+- Presenter采用动态代理，避免View为null；
+- 更简单的 Presenter ,Model注解工厂，用起来只需要一行代码；
 - 使用Lifecycle 赋予 Presenter 生命周期，避免onResume()等方法的重写，减少代码复杂度。
+
+更多小工具，自行翻看，LiveBus（方案来自美团技术团队）替代EventBus。
 
 
 以下Class你可能需要注意：
 
-BaseActivity. Activity基类;
+BaseFragment.  对应 V 层超类;
 
-BaseFragment.  对应 V 层;
+BasePresenter. 对应 P 层超类；
 
-BasePresenter. 对应 P 层；
-
-Latte.  默认配置层
-
-M 层 应该按照业务逻辑划分自行定义,这里并没有进行封装。
+BaseModel. 对应M 层超类；
 
 
 
-### 使用方式：
+Fragment使用fragmentationx库二次封装	
 
-##### 配置管理：
+#### 使用Demo:
 
-默认采用单Activity+多Fragment开发，Activity默认继承BaseActivity即可，已经处理了全局Activity,Handler,Context。更多配置项请自行定义,并在Activity setLatteinit()中返回true,那么将只会默认处理Activity。
-
-**实例代码**
+#### 契约类
 
 ```java
-//添加配置信息,适用于单Activity，默认配置,如果需要自行配置，请重写setLatteinit()返回值
-if (setLatteinit()) {
-    Latte.getConfigurator().withBaseActivity(this);
-} else {
-    Latte.getConfigurator()
-            .withContext(this)
-            .withBaseActivity(this)
-            .withHandler(new Handler())
-            .configure();
-}
+public interface TestControl {
+    interface testView extends IView {
 
+        void test();
 
-public boolean setLatteinit() {
-        return false;
-}
-```
-
-**自行配置信息**：
-
-```java
-public class ExampleApp extends Application {
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Handler handler=new Handler();
-        Latte.init(this)
-                .withHandler(handler)
-                ...
-                .configure();
     }
 
-}
-```
-
-```java
-public class MainActivity extends BaseActivity {
-
-    @Override
-    public int getLayout() {
-        return R.layout.activity_main;
+    interface testPresenter extends IPresenter<testView, testModel> {
     }
 
-    @Override
-    public boolean setLatteinit() {
-        return true;
+    interface testModel extends IModel {
     }
 }
 ```
 
 
 
-#### 实例Demo:
-
-##### M(根据业务自行配置):
+#### Model
 
 ```java
-public interface IHomeModel ...
-```
+public class TestModels extends BaseModel<TestControl.testPresenter> implements TestControl.testModel{
 
-```java
-public class IHomeImpl implements IHomeModel ...
+}
 ```
 
 
 
-##### V:
+#### View
 
 ```java
-public interface IHomeView extends IBaseView ...
-```
-
-```java
-@CreatePresenter(HomePresenter.class)
-public class HomeDelegate extends BaseFragment<HomePresenter> implements IHomeView ...
-```
-
-
-
-##### P:
-
-```java
-public class HomePresenter extends BasePresenter<IHomeView> {
-  private IHomeModel iModel;
-  private IHomeView iView;
+//注解Presenter
+@CreatePresenter(TestPresenter.class)
+public class TestFragment extends BaseFragment<TestControl.testPresenter> implements TestControl.testView {
+    @Override
+    public Object setLayout() {
+        return R.layout.test_fragment;
+    }
 
     @Override
-    public void getView(IHomeView view) {
-        this.iView = view;
-        iModel = new IHomeImpl();
+    public void onBindView(@Nullable Bundle savedInstanceState, @NonNull View rootView) {
+
+    }
+
+    public static TestFragment newInstance() {
+        
+        Bundle args = new Bundle();
+        
+        TestFragment fragment = new TestFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void test() {
+        Toast.makeText(getContext(), "测试方法", Toast.LENGTH_SHORT).show();
     }
 }
 ```
+
+
+
+#### Presenter
+
+```java
+//注解Model
+@CreateModel(TestModels.class)
+public class TestPresenter extends BasePresenter<TestControl.testView, TestControl.testModel> implements TestControl.testPresenter {
+    @Override
+    public void initPresenter() {
+      	//测试方法
+        getView().test();
+    }
+}
+```
+
+
+

@@ -12,7 +12,6 @@ import com.example.cloudmvp.view.IView;
  */
 public interface IPresenter<V extends IView, M extends IModel> extends DefaultLifecycleObserver {
 
-
     /**
      * 一些初始化的操作
      */

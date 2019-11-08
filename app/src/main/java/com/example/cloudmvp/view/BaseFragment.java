@@ -24,9 +24,6 @@ import butterknife.Unbinder;
 
 /**
  * Fragment基类
- * 处理了Fragment返回事件，适用于JetPack Navigation
- * 根据Fragment的需求重写 setBackMode()-是否重写返回键,setBackPress()-具体实现的需求,postBackEvens()-通知Activity即将到来的返回事件拦截
- *
  * @author by Petterp
  * @date 2019-08-03
  */
