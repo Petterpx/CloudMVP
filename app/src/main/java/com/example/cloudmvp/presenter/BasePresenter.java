@@ -35,7 +35,7 @@ import io.reactivex.schedulers.Schedulers;
  * @author by Petterp
  * @date 2019-08-03
  */
-public abstract class BasePresenter<V extends IView, M extends IModel> implements IPresenter<V, M>, InvocationHandler {
+public abstract class BasePresenter<V extends IView, M extends IModel> implements IPresenter<V>, InvocationHandler {
 
     private SoftReference mView;
     private Disposable subscribe = null;
@@ -66,12 +66,10 @@ public abstract class BasePresenter<V extends IView, M extends IModel> implement
     }
 
 
-    @Override
     public V getView() {
         return proxyView;
     }
 
-    @Override
     public M getModel() {
         return model;
     }
@@ -91,10 +89,6 @@ public abstract class BasePresenter<V extends IView, M extends IModel> implement
     }
 
 
-    @Override
-    public void onStart(@NonNull LifecycleOwner owner) {
-
-    }
 
     @Override
     public void onResume(@NonNull LifecycleOwner owner) {
@@ -105,10 +99,6 @@ public abstract class BasePresenter<V extends IView, M extends IModel> implement
         }
     }
 
-    @Override
-    public void onPause(@NonNull LifecycleOwner owner) {
-
-    }
 
     @Override
     public void onStop(@NonNull LifecycleOwner owner) {

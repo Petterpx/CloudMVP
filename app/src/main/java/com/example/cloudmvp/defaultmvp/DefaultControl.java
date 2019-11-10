@@ -26,7 +26,7 @@ public interface DefaultControl {
         void defaultModel();
     }
 
-    interface DefaultPresenter extends IPresenter<DefaultView, DefaultModel> {
+    interface DefaultPresenter extends IPresenter<DefaultView> {
         /**
          * 默认Presenter
          */

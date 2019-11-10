@@ -1,6 +1,8 @@
 package com.example.cloudmvp.presenter;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 
 import com.example.cloudmvp.model.IModel;
 import com.example.cloudmvp.view.IView;
@@ -10,7 +12,7 @@ import com.example.cloudmvp.view.IView;
  * on 2019-11-04
  * Function:Presenter 接口
  */
-public interface IPresenter<V extends IView, M extends IModel> extends DefaultLifecycleObserver {
+public interface IPresenter<V extends IView> extends DefaultLifecycleObserver {
 
     /**
      * 一些初始化的操作
@@ -35,19 +37,6 @@ public interface IPresenter<V extends IView, M extends IModel> extends DefaultLi
      */
     void setView(V v);
 
-    /**
-     * 获取V
-     *
-     * @return V
-     */
-    V getView();
-
-    /**
-     * 获取M
-     *
-     * @return M
-     */
-    M getModel();
 
     /**
      * 启动Rx初始化耗时任务
@@ -77,4 +66,13 @@ public interface IPresenter<V extends IView, M extends IModel> extends DefaultLi
         return false;
     }
 
+    @Override
+    default void onPause(@NonNull LifecycleOwner owner) {
+
+    }
+
+    @Override
+    default void onStart(@NonNull LifecycleOwner owner) {
+
+    }
 }

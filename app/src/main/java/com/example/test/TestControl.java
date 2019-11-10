@@ -18,7 +18,7 @@ public interface TestControl {
 
     }
 
-    interface testPresenter extends IPresenter<testView, testModel> {
+    interface testPresenter extends IPresenter<testView> {
     }
 
     interface testModel extends IModel {
